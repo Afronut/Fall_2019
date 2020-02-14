@@ -1,0 +1,180 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW2P3</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-09-13"><meta name="DC.source" content="HW2P3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Problem 3</span>
+clear
+clc
+close <span class="string">all</span>
+<span class="comment">% Constant definition</span>
+m=1;
+
+M=1;
+k=1;
+b=.1;
+u=1;
+b1=.1;
+<span class="comment">% Symbolic var</span>
+syms <span class="string">y(t)</span> <span class="string">x(t)</span>
+<span class="comment">%generate vector field from the ode</span>
+ode=odeToVectorField(diff(x,2)==-(k/m)*(x-y)-(b/m)*(diff(x)-diff(y)),(diff(y,2)==u/M+(k/M)*(x-y)+((b/M)*diff(x)-(b1/M)*diff(y))));
+<span class="comment">%turm the field into func</span>
+func = matlabFunction(ode,<span class="string">'vars'</span>, {<span class="string">'t'</span>,<span class="string">'Y'</span>});
+<span class="comment">%solve ODE</span>
+[t,sol] = ode45(func,[0 50],[0 0 0 0]);
+y=sol(:,1);
+ydot=sol(:,2);
+x=sol(:,3);
+xdot=sol(:,4);
+<span class="comment">%plot velocity the mass M only</span>
+plot(t,ydot)
+
+<span class="comment">% Problem 4</span>
+clear
+clc
+close <span class="string">all</span>
+<span class="comment">% Constant</span>
+m=1;
+l=1;
+g=9.81;
+k=1;
+deta=5*(pi/180);
+<span class="comment">%symbolic vars</span>
+syms <span class="string">y(t)</span> <span class="string">x(t)</span>
+<span class="comment">%Create verctor field</span>
+ode=odeToVectorField(diff(x,2)==(9*k/16*m)*y-(g/l-9*k/(16*m))*x, diff(y,2)==(9*k/16*m)*x-(g/l-9*k/(16*m))*y);
+<span class="comment">%Change vector field into function</span>
+func = matlabFunction(ode,<span class="string">'vars'</span>, {<span class="string">'t'</span>,<span class="string">'Y'</span>});
+<span class="comment">% Solve</span>
+[t,sol] = ode45(func,[0 100],[deta 0 0 0]);
+y=sol(:,1);
+ydot=sol(:,2);
+x=sol(:,3);
+xdot=sol(:,4);
+<span class="comment">%Plot the Y</span>
+plot(t,y)
+hold <span class="string">on</span>
+<span class="comment">% Plot X</span>
+plot(t,x)
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Problem 3
+clear 
+clc
+close all
+% Constant definition
+m=1;
+
+M=1;
+k=1;
+b=.1;
+u=1;
+b1=.1;
+% Symbolic var
+syms y(t) x(t)
+%generate vector field from the ode
+ode=odeToVectorField(diff(x,2)==-(k/m)*(x-y)-(b/m)*(diff(x)-diff(y)),(diff(y,2)==u/M+(k/M)*(x-y)+((b/M)*diff(x)-(b1/M)*diff(y))));
+%turm the field into func
+func = matlabFunction(ode,'vars', {'t','Y'});
+%solve ODE
+[t,sol] = ode45(func,[0 50],[0 0 0 0]);
+y=sol(:,1);
+ydot=sol(:,2);
+x=sol(:,3);
+xdot=sol(:,4);
+%plot velocity the mass M only 
+plot(t,ydot)
+
+% Problem 4
+clear
+clc
+close all
+% Constant 
+m=1;
+l=1;
+g=9.81;
+k=1;
+deta=5*(pi/180);
+%symbolic vars
+syms y(t) x(t)
+%Create verctor field 
+ode=odeToVectorField(diff(x,2)==(9*k/16*m)*y-(g/l-9*k/(16*m))*x, diff(y,2)==(9*k/16*m)*x-(g/l-9*k/(16*m))*y);
+%Change vector field into function
+func = matlabFunction(ode,'vars', {'t','Y'});
+% Solve 
+[t,sol] = ode45(func,[0 100],[deta 0 0 0]);
+y=sol(:,1);
+ydot=sol(:,2);
+x=sol(:,3);
+xdot=sol(:,4);
+%Plot the Y
+plot(t,y)
+hold on
+% Plot X
+plot(t,x)
+##### SOURCE END #####
+--></body></html>

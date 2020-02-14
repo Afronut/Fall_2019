@@ -1,0 +1,24 @@
+Number for requester thread=1
+Number for resolver thread=1
+1221412608 servicing: input/names1.txt; 
+Total run time=0.000431s
+Number for requester thread=1
+Number for resolver thread=1
+52934400 servicing: input/names1.txt; 
+Total run time=0.000677s
+Number for requester thread=1
+Number for resolver thread=1
+824522496 servicing: input/names2.txt; 
+Total run time=0.000554s
+Number for requester thread=1
+Number for resolver thread=1
+-168831232 servicing: input/names5.txt; 
+Total run time=0.001163s
+Number for requester thread=1
+Number for resolver thread=1
+1594619648 servicing: input/names1.txt; 
+1594619648 servicing: input/names2.txt; 
+1594619648 servicing: input/names3.txt; 
+1594619648 servicing: input/names4.txt; 
+1594619648 servicing: input/names5.txt; 
+Total run time=0.046876s

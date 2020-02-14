@@ -1,0 +1,40 @@
+#!/bin/bash
+if [ -z $1 ]; then
+echo -e "Compiling source code \e[5m...........\e[25m"
+sleep 2
+make all
+
+echo -e "Creating device with major number 300, Please wait\e[5m...........\e[25m"
+sudo mknod -m 777 /dev/simple_character_device c 300 0 
+
+echo -e "Inserting driver into kernel \e[5m...........\e[25m"
+sudo insmod simple_char_driver.ko
+sleep 2
+
+echo -e "Start clean up  \e[5m...........\e[25m"
+make clean > /dev/null
+
+echo -e "Building Test App \e[5m...........\e[25m"
+make build
+
+echo -e "Starting Coovi Char Device now \e[5m...........\e[25m"
+echo " "
+echo "Visit /var/log/syslog for output messages"
+echo " "
+echo -e "-------------------\033[36mHelp Menu\e[0m------------------"
+echo -e "r -\033[31mRead from  device     \e[0m-- Required total bytes to read"
+echo -e "w -\033[31mWrite to device       \e[0m-- Required string to write"
+echo -e "s -\033[31mseek into device      \e[0m-- Required OFFSET and WHENCE"
+echo -e "c -\033[31mClose device and Quit\e[0m"
+./driver_app
+sleep 2
+echo -e "-------------------\033[36mGoodbye\e[0m------------------"
+fi
+if [ "$1" = "remove" ] ; then
+    echo -e "Uninstalling and removing device \e[5m...........\e[25m"
+    sudo rmmod  -f simple_char_driver
+    sudo rm -f /dev/simple_character_device
+    echo -e "Cleaning up \e[5m...........\e[25m"
+    make purge
+fi
+

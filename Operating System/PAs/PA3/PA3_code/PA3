@@ -1,0 +1,104 @@
+#! /bin/bash
+echo -e "-----------\033[36m-----------------------------\e[0m------------ "
+make
+
+
+if [ "$#" -gt 4 ];then
+echo "Running with you own input files? Do this instead"
+echo "./multi_lookup Num_req_thread Num_rev_thread req_log rev_log file1 file2 file3 ..."
+exit 1
+fi
+base_path=$(pwd)
+input_file=""
+path=""
+files=$(ls input/ | grep --include=*.txt names)
+# echo $files
+ext="input/"
+full_path="$base_path"
+for file in $files; do
+    path="$path$ext$file "
+done
+# make clean
+echo -e "-----------\033[36m-----------------------------\e[0m------------ "
+if [ "$1" = "leak" ] ; then
+echo -e "-----------\033[36mMemory Leak Result\e[0m------------"
+valgrind --log-file="Valgrind.txt" --leak-check=full ./multi_lookup 1 1 "requester_log.txt" "requester_log.txt" $path
+echo "Memory Summary is in file Valgrind.txt"
+exit 1
+fi
+
+# sleep 2
+# python performance.py multi_lookup> /dev/null
+# echo $path
+if [ "$1" = "test" ] ; then
+
+req_thread=$1
+rev_thread=$2
+req_log="requester_log.txt"
+rev_log="resolver_log.txt"
+
+echo -e "-----------\033[36mAbove is the process time:\e[0m------------"
+echo -e "Real: The time from start to finish of the call"
+echo -e "user: Amount of CPU time spent in user mode"
+echo -e "sys: Amount of CPU time spent in kernel mode"
+echo -e "-----------\033[36mPerfomance Test:\e[0m------------"
+echo " "> performance.txt
+echo -e "\033[36mTEST 1------------------------------ Req_th=1 Rev_th=1 \e[0m"
+echo -e "TEST 1------------------------------Req_th=1 Rev_th=1">> performance.txt
+
+time nice -n 0 ./multi_lookup 1 1 $req_log $rev_log $path
+sleep 2
+
+echo -e "\033[36mTEST 2------------------------------Req_th=1 Rev_th=3\e[0m"
+echo -e "TEST 2------------------------------Req_th=1 Rev_th=3">> performance.txt
+
+sleep 2
+
+time nice -n 0 ./multi_lookup 1 3 $req_log $rev_log $path
+sleep 2
+
+echo -e "\033[36mTEST 3------------------------------Req_th=3 Rev_th=1\e[0m"
+echo -e "TEST 3------------------------------Req_th=3 Rev_th=1">> performance.txt
+
+time nice -n 0 ./multi_lookup 3 1 $req_log $rev_log $path
+sleep 2
+
+echo -e "\033[36mTEST 4------------------------------Req_th=3 Rev_th=3\e[0m"
+echo -e "TEST 4------------------------------Req_th=3 Rev_th=3">> performance.txt
+
+time nice -n 0 ./multi_lookup 3 3 $req_log $rev_log $path
+sleep 2
+
+echo -e "\033[36mTEST 5------------------------------Req_th=5 Rev_th=5\e[0m"
+echo -e "TEST 5------------------------------Req_th=5 Rev_th=5">> performance.txt
+
+time nice -n 0 ./multi_lookup 5 5 $req_log $rev_log $path
+sleep 2
+
+echo -e "\033[36mTEST 6------------------------------Req_th=8 Rev_th=5\e[0m"
+echo -e "TEST 6------------------------------Req_th=8 Rev_th=5">> performance.txt
+
+time nice -n 0 ./multi_lookup 8 5 $req_log $rev_log $path
+exit 1
+fi
+if [ "$1" = "purge" ] ; then
+make clean
+make purge
+exit 1
+fi
+
+if [ "$1" = "clean" ] ; then
+make clean
+exit 1
+fi
+echo -e "-----------\033[36m-----------------------------\e[0m------------ "
+if [ "$#" -ne 4 ]; then
+echo "Need at least 4 arguments as follow to run in this mode."
+echo "Software will look for input files in the folder ../input. Make sure it is present"
+echo "Num_req_thread Num_rev_thread req_log rev_log "
+exit 1
+fi
+req_log=$36m
+rev_log=$4
+# echo $req_log
+time nice -n 0 ./multi_lookup $1 $2 $3 $4 $path
